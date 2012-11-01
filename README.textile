@@ -23,7 +23,7 @@ public class MyApplication extends Application {
 		return eventBus;
 	}
 }
-</code></code>
+</code></pre>
 
 h3. Generator of events.
 
