@@ -1,0 +1,73 @@
+h1. SEBA
+
+Seba is a simple event bus for android. It doesn't use reflection.
+
+This library is at the very initial phase where all the requirements are not clear yet. It is likely to be affected by changes and issues.
+
+h2. How to use it
+
+h3. EventBus instance
+
+Instantiate and share an event bus between event consumers and producers. A good place can be the Application class.
+
+<pre><code>
+public class MyApplication extends Application {
+
+	private EventBus eventBus;
+		
+	public void onCreate() {
+		eventBus = new EventBus();
+	}
+		
+	public static final EventBus getEventBus() {
+		return eventBus;
+	}
+}
+</code></code>
+
+h3. Generator of events.
+
+A generator can be an IntentService. In this case you just need to get a reference from the application class and then send the event.
+
+<pre><code>
+public class MyIntentService extends IntentService {
+
+	public EventBus eventBus;
+		
+	public void onCreate() {
+		eventBus = Application.getEventBus();
+		eventBus.send(this.getClass(), new CustomEvent(){});
+	}
+		
+}
+</code></pre>
+
+CustomEvent need to implement the market interface Event.
+
+h3. Consumer of events.
+
+A possible consumer of events is an Activity. The activity need to register and unregister an EventHandler.
+
+<pre><code>
+private MainThreadEventHandler eventHandler;
+		
+public void onResume() {
+	eventHandler = new MainThreadEventHandler(new Handler()) {
+		@Override
+		public void handleAnsyc(Event event) {
+			//using this type of handler you can do UI changes	
+		}
+	};
+	Application.getEventBus().registerHandler(CustomEvent.class, eventHandler);
+}
+		
+public void onPause() {
+	Application.getEventBus().unregisterHandler(CustomEvent.class, eventHandler);
+}
+</code></pre>
+
+h2. Difference between listeners and handlers.
+
+Handlers are in this library are considered consumers of a particular class of events. Handlers can work on the thread that sent the event or you can instantiate a MainThreadEventHandler that uses the main thread to execute operations in response to events.
+
+Listeners are observing classes that are sources of events, any type of events.
