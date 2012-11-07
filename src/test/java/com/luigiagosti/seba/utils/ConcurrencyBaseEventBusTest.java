@@ -19,6 +19,27 @@ public class ConcurrencyBaseEventBusTest {
 			assertEquals(LARGE_NUMBER_OF_EVENT, ec.getEventConsumedCounter());
 		}
 	}
+	
+	protected void waitForConsumers(final EventConsumer...eventConsumers) {
+		try {
+			with().pollInterval(Duration.ONE_HUNDRED_MILLISECONDS).and()
+				.with().pollDelay(20, TimeUnit.MILLISECONDS).await("event producer finished")
+				.atMost(2, TimeUnit.SECONDS).until(new Callable<Boolean>() {
+					@Override
+		            public Boolean call() throws Exception {
+						for(EventConsumer ec : eventConsumers) {
+							if(ec.getEventConsumedCounter() != LARGE_NUMBER_OF_EVENT) {
+								return false;
+							}
+						}
+						return true;
+		            }
+				});
+		} catch (Exception re) {
+			re.printStackTrace();
+			Assert.fail(re.getMessage());
+		}
+	}
 
 	protected void waitForFinish(final EventProducer...eventProducers) {
 		try {

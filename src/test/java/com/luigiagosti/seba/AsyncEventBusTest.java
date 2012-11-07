@@ -2,7 +2,6 @@ package com.luigiagosti.seba;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.luigiagosti.seba.utils.AsyncEventProducer;
@@ -21,7 +20,7 @@ public class AsyncEventBusTest extends ConcurrencyBaseEventBusTest {
 	private EventProducer eventProducer2;
 	private EventConsumer eventConsumer2;
 	
-	@Ignore @Test
+	@Test
 	public void shouldReceiveEventSentAsynchronously() {
 		EventBus bus = new EventBus();
 		eventConsumer = new EventConsumer(bus);
@@ -33,15 +32,15 @@ public class AsyncEventBusTest extends ConcurrencyBaseEventBusTest {
 		assertEquals(10, eventConsumer.getEventConsumedCounter());
 	}
 	
-	@Ignore @Test
+	@Test
 	public void shouldReceiveEventFromDifferentThread() {
 		EventBus bus = new EventBus();
 		eventConsumer = new EventConsumer(bus);
 		eventConsumer1 = new EventConsumer(bus, MyEvent1.class);
 		eventConsumer2 = new EventConsumer(bus, MyEvent2.class);
-		eventProducer = new AsyncEventProducer(bus, 10);
-		eventProducer1 = new AsyncEventProducer(bus, 10, MyEvent1.class);
-		eventProducer2 = new AsyncEventProducer(bus, 10, MyEvent2.class);
+		eventProducer = new AsyncEventProducer(bus, LARGE_NUMBER_OF_EVENT);
+		eventProducer1 = new AsyncEventProducer(bus, LARGE_NUMBER_OF_EVENT, MyEvent1.class);
+		eventProducer2 = new AsyncEventProducer(bus, LARGE_NUMBER_OF_EVENT, MyEvent2.class);
 		start(eventConsumer);
 		start(eventConsumer1);
 		start(eventConsumer2);
@@ -50,7 +49,25 @@ public class AsyncEventBusTest extends ConcurrencyBaseEventBusTest {
 		start(eventProducer2);
 		
 		waitForFinish(eventProducer, eventProducer1, eventProducer2);
-		checkCosumers(eventConsumer, eventConsumer1, eventConsumer2);
+		waitForConsumers(eventConsumer, eventConsumer1, eventConsumer2);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldNotExpectNullEvent() {
+		EventBus bus = new EventBus();
+		bus.asyncSend(null);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldNotExpectNullEventOnAsyncSendWithSource() {
+		EventBus bus = new EventBus();
+		bus.asyncSend(null, EventProducer.class);
+	}
+	 
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldNotExpectNullEventClassOnUnregisterListener() {
+		EventBus bus = new EventBus();
+		bus.asyncSend(new Event() {}, null);
 	}
 
 }

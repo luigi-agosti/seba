@@ -17,6 +17,8 @@ package com.luigiagosti.seba;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Instantiate and share an event bus between event consumers and producers. 
@@ -35,6 +37,8 @@ public class EventBus {
 	private ConcurrentMap<Class<?>, EventListener> listeners;
 	private ConcurrentMap<Class<? extends Event>, Event> stickyEvents;
 	
+	private Executor executor = Executors.newSingleThreadExecutor();
+	
 	public EventBus() {
 	    handlers = new ConcurrentHashMap<Class<? extends Event>, EventHandler>();
 	    listeners = new ConcurrentHashMap<Class<?>, EventListener>();
@@ -48,9 +52,9 @@ public class EventBus {
 	 * @param handler
 	 * @param eventClass
 	 */
-	public void registerHandler(EventHandler handler, Class<? extends Event> eventClass) {
+	public void registerHandler(final EventHandler handler, final Class<? extends Event> eventClass) {
 		checkNull(handler, "Handler");
-		checkNull(eventClass, "Event");
+		checkNull(eventClass, "Event class");
 		handlers.putIfAbsent(eventClass, handler);
 		if(stickyEvents.containsKey(eventClass)) {
 			handler.handle(stickyEvents.get(eventClass));
@@ -64,9 +68,9 @@ public class EventBus {
 	 * @param handler
 	 * @param eventClass
 	 */
-	public void unregisterHandler(EventHandler handler, Class<? extends Event> eventClass) {
+	public void unregisterHandler(final EventHandler handler, final Class<? extends Event> eventClass) {
 		checkNull(handler, "Handler");
-		checkNull(eventClass, "Event");
+		checkNull(eventClass, "Event class");
 		handlers.remove(eventClass, handler);
 	}
 	
@@ -77,7 +81,7 @@ public class EventBus {
 	 * @param listener
 	 * @param eventSourceClass
 	 */
-	public void registerListener(EventListener listener, Class<?> eventSourceClass) {
+	public void registerListener(final EventListener listener, final Class<?> eventSourceClass) {
 		checkNull(listener, "Listener");
 		checkNull(eventSourceClass, "Event source class");
 		listeners.putIfAbsent(eventSourceClass, listener);
@@ -90,7 +94,7 @@ public class EventBus {
 	 * @param listener
 	 * @param eventSourceClass
 	 */
-	public void unregisterListener(EventListener listener, Class<?> eventSourceClass) {
+	public void unregisterListener(final EventListener listener, final Class<?> eventSourceClass) {
 		checkNull(listener, "Listener");
 		checkNull(eventSourceClass, "Event source class");
 		listeners.remove(eventSourceClass, listener);
@@ -105,8 +109,8 @@ public class EventBus {
 	 * 
 	 * @param event
 	 */
-	public void send(Event event) {
-		checkNull(event, "Event");
+	public void send(final Event event) {
+		checkNullEvent(event);
 		sendToHandlers(event);
 	}
 	
@@ -120,8 +124,8 @@ public class EventBus {
 	 * @param event
 	 * @param eventSourceClass
 	 */
-	public void send(Event event, Class<?> eventSourceClass) {
-		checkNull(event, "Event");
+	public void send(final Event event, final Class<?> eventSourceClass) {
+		checkNullEvent(event);
 		checkNull(eventSourceClass, "Event source class");
 		if(listeners.containsKey(eventSourceClass)) {
 			listeners.get(eventSourceClass).onEvent(event);
@@ -134,8 +138,14 @@ public class EventBus {
 	 * 
 	 * @param event
 	 */
-	public void asyncSend(Event event) {
-		throw new RuntimeException("Functionality not implemented yet");
+	public void asyncSend(final Event event) {
+		checkNullEvent(event);
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				send(event);
+			}
+		});
 	}
 	
 	/**
@@ -143,8 +153,15 @@ public class EventBus {
 	 * 
 	 * @param event
 	 */
-	public void asyncSend(Event event, Class<?> eventSourceClass) {
-		throw new RuntimeException("Functionality not implemented yet");
+	public void asyncSend(final Event event, final Class<?> eventSourceClass) {
+		checkNullEvent(event);
+		checkNull(eventSourceClass, "Event source class");
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				send(event, eventSourceClass);
+			}
+		});
 	}
 	
 	private void sendToHandlers(Event event) {
@@ -157,10 +174,15 @@ public class EventBus {
 		}
 	}
 	
+	private void checkNullEvent(Event event) {
+		checkNull(event, "Event");
+	}
+	
 	private void checkNull(Object obj, String paramName) {
-		if(obj == null) {
-			throw new IllegalArgumentException(paramName + " can't be null!");
+		if(obj != null) {
+			return;
 		}
+		throw new IllegalArgumentException(paramName + " can't be null!");
 	}
 
 }

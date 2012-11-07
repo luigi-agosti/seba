@@ -28,7 +28,6 @@ public class EventConsumer implements Runnable, EventHandler {
 
 	@Override
 	public boolean handle(Event event) {
-		//System.out.println("consuming : " + event);
 		eventConsumedCounter++;
 		return true;
 	}
