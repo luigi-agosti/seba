@@ -36,7 +36,7 @@ public class MyIntentService extends IntentService {
 		
 	public void onCreate() {
 		eventBus = Application.getEventBus();
-		eventBus.send(this.getClass(), new CustomEvent(){});
+		eventBus.send(new CustomEvent(){});
 	}
 		
 }
@@ -52,22 +52,22 @@ A possible consumer of events is an Activity. The activity need to register and 
 private MainThreadEventHandler eventHandler;
 		
 public void onResume() {
-	eventHandler = new MainThreadEventHandler(new Handler()) {
+	eventHandler = new EventHandler.OnMainThread(new Handler()) {
 		@Override
 		public void handleAnsyc(Event event) {
 			//using this type of handler you can do UI changes	
 		}
 	};
-	Application.getEventBus().registerHandler(CustomEvent.class, eventHandler);
+	Application.getEventBus().registerHandler(eventHandler, CustomEvent.class);
 }
 		
 public void onPause() {
-	Application.getEventBus().unregisterHandler(CustomEvent.class, eventHandler);
+	Application.getEventBus().unregisterHandler(eventHandler, CustomEvent.class);
 }
 </code></pre>
 
 h2. Difference between listeners and handlers.
 
-Handlers are in this library are considered consumers of a particular class of events. Handlers can work on the thread that sent the event or you can instantiate a MainThreadEventHandler that uses the main thread to execute operations in response to events.
+Handlers in this library are considered consumers of a particular class of events. Handlers can work on the thread that sent the event or you can instantiate a MainThreadEventHandler that uses the main thread to execute operations in response to events.
 
 Listeners are observing classes that are sources of events, any type of events.
