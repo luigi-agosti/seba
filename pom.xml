@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.luigiagosti</groupId>
   <artifactId>seba</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>seba</name>
   <description>Simple Event Bus for Android</description>
