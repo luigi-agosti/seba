@@ -12,7 +12,7 @@
   <packaging>jar</packaging>
   <name>seba</name>
   <description>Simple Event Bus for Android</description>
-  <url>http://www.luigiagosti.com</url>
+  <url>https://github.com/luigi-agosti/seba</url>
   <licenses>
     <license>
       <name>Apache 2.0</name>
