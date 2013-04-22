@@ -61,7 +61,7 @@ public class EventBusTest {
 		
 		verify(handler, never()).handle(event);
 	}
-	
+
 	@Test
 	public void shouldKeepOnlyFirstRegisteredHandler() {
 		eventBus.registerHandler(handler, event.getClass());
@@ -137,12 +137,12 @@ public class EventBusTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldNotExpectNullHanldersOnRegister() {
+	public void shouldNotExpectNullHandlersOnRegister() {
 		eventBus.registerHandler(null, event.getClass());
 	}
 	 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldNotExpectNullHanldersOnUnregister() {
+	public void shouldNotExpectNullHandlersOnUnregister() {
 		eventBus.unregisterHandler(null, event.getClass());
 	}
 	
