@@ -2,12 +2,9 @@ h1. SEBA
 
 Seba is a simple event bus for android. It doesn't use reflection.
 
-This library is at the very initial phase where all the requirements are not clear yet.
-It is likely to be affected by changes and issues.
-
 You may want to have a look at similar but more recognized libraries implementing the event bus model : "otto":https://github.com/square/otto and "eventBus":https://github.com/greenrobot/EventBus.git
 
-If you still like to use it, here is a quick guide. You can always contact me if you want to know more.
+If you still like to use this library, here is a quick guide. You can always contact me if you want to know more.
 
 h2. How to use it
 
@@ -93,7 +90,15 @@ With maven is simple as the project is available on sonatype
 
 h3. Download latest
 
-You can download the "latest version":http://search.maven.org/remotecontent?filepath=com/luigiagosti/seba/1.0/seba-1.0.jar to your libs folder.
+You can download the "latest version":http://goo.gl/Hy139 to your libs folder.
+
+h2. Where it is used
+
+At the moment the library is used on the "image search app":http://goo.gl/Z0VKt. Small application to search for images using different apis.
+I haven't see any issue that the app has 300k downloads.
+
+It will nice if you are informing me if you are using the library in your project.
+
 
 h2. License
 
