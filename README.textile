@@ -2,9 +2,13 @@ h1. SEBA
 
 Seba is a simple event bus for android. It doesn't use reflection.
 
-This library is at the very initial phase where all the requirements are not clear yet. It is likely to be affected by changes and issues.
+You may want to have a look at similar but more recognized libraries implementing the event bus model : "otto":https://github.com/square/otto and "eventBus":https://github.com/greenrobot/EventBus.git
+
+If you still like to use this library, here is a quick guide. You can always contact me if you want to know more.
 
 h2. How to use it
+
+Typical scenario for this library is the case where from an intent service you need to notify an activity or a fragment.
 
 h3. EventBus instance
 
@@ -42,7 +46,13 @@ public class MyIntentService extends IntentService {
 }
 </code></pre>
 
-CustomEvent need to implement the market interface Event.
+CustomEvent need to implement the marker interface Event.
+
+<pre><code>
+public class CustomEvent implements Event {
+
+}
+</code></pre>
 
 h3. Consumer of events.
 
@@ -50,24 +60,48 @@ A possible consumer of events is an Activity. The activity need to register and 
 
 <pre><code>
 private MainThreadEventHandler eventHandler;
-		
+
 public void onResume() {
 	eventHandler = new EventHandler.OnMainThread(new Handler()) {
 		@Override
 		public void handleAnsyc(Event event) {
-			//using this type of handler you can do UI changes	
+			//using this type of handler you can do UI changes
 		}
 	};
 	Application.getEventBus().registerHandler(eventHandler, CustomEvent.class);
 }
-		
+
 public void onPause() {
 	Application.getEventBus().unregisterHandler(eventHandler, CustomEvent.class);
 }
 </code></pre>
 
-h2. Difference between listeners and handlers.
+h2. Get the jar
 
-Handlers in this library are considered consumers of a particular class of events. Handlers can work on the thread that sent the event or you can instantiate a MainThreadEventHandler that uses the main thread to execute operations in response to events.
+h3. Maven
 
-Listeners are observing classes that are sources of events, any type of events.
+With maven is simple as the project is available on sonatype
+
+<pre><code><dependency>
+  <groupId>com.luigiagosti</groupId>
+  <artifactId>seba</artifactId>
+  <version>1.0</version>
+</dependency></code></pre>
+
+h3. Download latest
+
+You can download the "latest version":http://goo.gl/Hy139 to your libs folder.
+
+h2. Where it is used
+
+At the moment the library is used on the "image search app":http://goo.gl/Z0VKt. Small application to search for images using different apis.
+I haven't see any issue that the app has 300k downloads.
+
+It will nice if you are informing me if you are using the library in your project.
+
+
+h2. License
+
+Apache License, Version 2.0
+
+
