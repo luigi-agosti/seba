@@ -127,9 +127,15 @@ public class EventBus {
 	public void send(final Event event, final Class<?> eventSourceClass) {
 		checkNullEvent(event);
 		checkNull(eventSourceClass, "Event source class");
-		if(listeners.containsKey(eventSourceClass)) {
-			listeners.get(eventSourceClass).onEvent(event);
-		}
+        try {
+            if (listeners.containsKey( eventSourceClass )) {
+                listeners.get( eventSourceClass ).onEvent( event );
+            }
+        } catch (NullPointerException npe) {
+            //Threading condition where an handler is removed after contains
+            // but I don't want to have a lock for it.
+            // it is quite rare case anyway
+        }
 		sendToHandlers(event);
 	}
 	
@@ -165,10 +171,16 @@ public class EventBus {
 	}
 	
 	private void sendToHandlers(Event event) {
-		if(handlers.containsKey(event.getClass())) {
-			handlers.get(event.getClass()).handle(event);
-			return;
-		}
+        try {
+            if (handlers.containsKey( event.getClass() )) {
+                handlers.get( event.getClass() ).handle( event );
+                return;
+            }
+        } catch (NullPointerException npe) {
+            //Threading condition where an handler is removed after contains
+            // but I don't want to have a lock for it.
+            // it is quite rare case anyway
+        }
 		if(event instanceof Event.Sticky) {
 			stickyEvents.putIfAbsent(event.getClass(), event);
 		}
