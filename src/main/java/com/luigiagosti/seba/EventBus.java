@@ -62,7 +62,6 @@ public class EventBus {
      * practice is to register onResume and unregister onPause.
      */
     public void unregisterHandler(final EventHandler handler, final Class<? extends Event> eventClass) {
-        checkNull( handler, "Handler" );
         checkNull( eventClass, "Event class" );
         try {
             handlers.remove( eventClass, handler );
@@ -86,7 +85,6 @@ public class EventBus {
      * practice is to register onResume and unregister onPause.
      */
     public void unregisterListener(final EventListener listener, final Class<?> eventSourceClass) {
-        checkNull( listener, "Listener" );
         checkNull( eventSourceClass, "Event source class" );
         try {
             listeners.remove( eventSourceClass, listener );
