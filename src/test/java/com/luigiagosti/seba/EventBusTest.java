@@ -145,8 +145,8 @@ public class EventBusTest {
         eventBus.registerHandler( null, event.getClass() );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotExpectNullHandlersOnUnregister() {
+    @Test
+    public void shouldExpectNullHandlersOnUnregister() {
         eventBus.unregisterHandler( null, event.getClass() );
     }
 
@@ -165,8 +165,8 @@ public class EventBusTest {
         eventBus.registerListener( null, event.getClass() );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldNotExpectNullListenersOnUnregister() {
+    @Test
+    public void shouldExpectNullListenersOnUnregister() {
         eventBus.unregisterListener( null, event.getClass() );
     }
 
