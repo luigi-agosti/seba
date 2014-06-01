@@ -64,7 +64,11 @@ public class EventBus {
     public void unregisterHandler(final EventHandler handler, final Class<? extends Event> eventClass) {
         checkNull( handler, "Handler" );
         checkNull( eventClass, "Event class" );
-        handlers.remove( eventClass, handler );
+        try {
+            handlers.remove( eventClass, handler );
+        } catch(Exception e) {
+            //Never fail unregister
+        }
     }
 
     /**
@@ -84,7 +88,11 @@ public class EventBus {
     public void unregisterListener(final EventListener listener, final Class<?> eventSourceClass) {
         checkNull( listener, "Listener" );
         checkNull( eventSourceClass, "Event source class" );
-        listeners.remove( eventSourceClass, listener );
+        try {
+            listeners.remove( eventSourceClass, listener );
+        } catch(Exception e) {
+            //Never fail unregister
+        }
     }
 
     /**

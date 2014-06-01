@@ -23,53 +23,51 @@ import com.luigiagosti.seba.EventHandler;
 import com.luigiagosti.seba.EventHandler.OnMainThread;
 
 public class SendingEventFromIntentServiceToActivity {
-	
-	public static class Application {
-		
-		private static EventBus eventBus;
-		
-		public void onCreate() {
-			eventBus = new EventBus();
-		}
-		
-		public static final EventBus getEventBus() {
-			return eventBus;
-		}
-		
-	}
-	
-	public static class Activity {
-		
-		private OnMainThread eventHandler;
-		
-		public void onResume() {
-			eventHandler = new EventHandler.OnMainThread(new Handler()) {
-				@Override
-				public void handleAnsyc(Event event) {
-					
-				}
-			};
-			Application.getEventBus().registerHandler(eventHandler, CustomEvent.class);
-		}
-		
-		public void onPause() {
-			Application.getEventBus().unregisterHandler(eventHandler, CustomEvent.class);
-		}
-	}
-	
-	public static class IntentService {
-		
-		public EventBus eventBus;
-		
-		public void onCreate() {
-			eventBus = Application.getEventBus();
-			eventBus.send(new CustomEvent(){}, this.getClass());
-		}
-		
-	}
-	
-	public static class CustomEvent implements Event {
-		
-	}
 
+    public static class Application {
+
+        private static EventBus eventBus;
+
+        public void onCreate() {
+            eventBus = new EventBus();
+        }
+
+        public static final EventBus getEventBus() {
+            return eventBus;
+        }
+    }
+
+    public static class Activity {
+
+        private OnMainThread eventHandler;
+
+        public void onResume() {
+            eventHandler = new EventHandler.OnMainThread( new Handler() ) {
+                @Override
+                public void handleAnsyc(Event event) {
+
+                }
+            };
+            Application.getEventBus().registerHandler( eventHandler, CustomEvent.class );
+        }
+
+        public void onPause() {
+            Application.getEventBus().unregisterHandler( eventHandler, CustomEvent.class );
+        }
+    }
+
+    public static class IntentService {
+
+        public EventBus eventBus;
+
+        public void onCreate() {
+            eventBus = Application.getEventBus();
+            eventBus.send( new CustomEvent() {
+            }, this.getClass() );
+        }
+    }
+
+    public static class CustomEvent implements Event {
+
+    }
 }

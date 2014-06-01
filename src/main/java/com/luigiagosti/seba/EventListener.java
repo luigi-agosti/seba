@@ -16,15 +16,11 @@
 package com.luigiagosti.seba;
 
 /**
- * Listeners are used to watch a particular source of events.
- * All the events sent with that particular class are sent over 
- * to the listener registered for it by the eventBus.
- * At the moment the library is not providing any other type 
- * of listeners although it is in theory very easy to implement 
- * a listener working on the main thread.
+ * Listeners are used to watch a particular source of events. All the events sent with that particular class are sent
+ * over to the listener registered for it by the eventBus. At the moment the library is not providing any other type of
+ * listeners although it is in theory very easy to implement a listener working on the main thread.
  */
 public interface EventListener {
 
-	void onEvent(Event event);
-
+    void onEvent(Event event);
 }

@@ -19,10 +19,8 @@ package com.luigiagosti.seba;
  * Marker interface for events.
  */
 public interface Event {
-	
-	interface Sticky extends Event {
 
-	}
+    interface Sticky extends Event {
 
-
+    }
 }
